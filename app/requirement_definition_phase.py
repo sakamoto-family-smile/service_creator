@@ -6,6 +6,7 @@ from .service_creator_agents import (
 )
 from .service_creator_tools import google_search_tool, human_feedback_tool
 import os
+import pandas as pd
 
 
 class RequirementDefinitionPhase1:
@@ -14,6 +15,11 @@ class RequirementDefinitionPhase1:
             model="gemini-2.0-flash",
             api_key=os.environ.get("GEMINI_API_KEY")
         )  # TODO : 各Agentごとにllmを設定したい
+
+    def before_kickoff(self, inputs):
+        csv_path = inputs["request_list_path"]
+        df = pd.read_csv(csv_path)
+        return {"request_data": df}
 
     def product_manager(self) -> Agent:
         goal = """
