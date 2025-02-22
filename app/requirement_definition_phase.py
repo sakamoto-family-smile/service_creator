@@ -1,50 +1,54 @@
 from crewai import Agent, Crew, Task, Process, LLM
+from .service_creator_agents import (
+    product_manager,
+    engineer_manager,
+    infrastructure_engineer
+)
+from .service_creator_tools import google_search_tool
 import os
 
 
 class RequirementDefinitionPhase:
-    def __init__(self, basic_role_define: dict) -> None:
-        self.__basic_role_define = basic_role_define
-        self.__backstory_key = "background"
-        self.__llm_key = "llm"  # TODO : こちらを利用したい
+    def __init__(self) -> None:
         self.__llm_instance = LLM(
             model="gemini-2.0-flash",
             api_key=os.environ.get("GEMINI_API_KEY")
         )  # TODO : 各Agentごとにllmを設定したい
 
     def product_manager(self) -> Agent:
-        role_name = "product_manager"
-        return Agent(
-            role="Product Manager",
-            goal="",
-            backstory=self.__basic_role_define[role_name][self.__backstory_key],
+        goal = """
+あああ
+        """
+        return product_manager(
+            goal=goal,
             llm=self.__llm_instance,
-            verbose=True,
+            tools=[google_search_tool()]
         )
 
     def engineer_manager(self) -> Agent:
-        role_name = "engineer_manager"
-        return Agent(
-            role="Engineer Manager",
-            goal="",
-            backstory=self.__basic_role_define[role_name][self.__backstory_key],
+        goal = """
+あああ
+        """
+        return engineer_manager(
+            goal=goal,
             llm=self.__llm_instance,
-            verbose=True,
+            tools=[google_search_tool()]
         )
 
     def infrastructure_engineer(self) -> Agent:
-        role_name = "infrastructure_engineer"
-        return Agent(
-            role="Infrastructure Engineer",
-            goal="",
-            backstory=self.__basic_role_define[role_name][self.__backstory_key],
+        goal = """
+あああ
+        """
+        return infrastructure_engineer(
+            goal=goal,
             llm=self.__llm_instance,
-            verbose=True,
+            tools=[google_search_tool()]
         )
 
     def task_of_creating_requirement_list(self) -> Task:
         return Task(
             description="""
+要求から要件一覧を作成する。
             """,
             expected_output="""
             """,
