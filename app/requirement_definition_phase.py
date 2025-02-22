@@ -19,7 +19,7 @@ class RequirementDefinitionPhase1:
     def before_kickoff(self, inputs):
         csv_path = inputs["request_list_path"]
         df = pd.read_csv(csv_path)
-        return {"request_data": df}
+        return {"request_table": df.to_string()}
 
     def product_manager(self) -> Agent:
         goal = """
@@ -59,13 +59,18 @@ class RequirementDefinitionPhase1:
 下記の要件を守って、要求から要件一覧を作成する。
 
 ★条件
-・要求一覧は表データとして入力される
+・要求一覧は表データとして入力される（要求一覧の表を参照）
 ・要求一覧から機能要件と非機能要件と分類できるように生成すること
 ・要件一覧のフォーマットはcsvとすること
 ・要求一覧の優先度に沿って、要件一覧に優先度をつけること
 ・要求内容から、ユーザーの作りたいものを想定し、必要に応じて要求の追加や削除をユーザー（human）に確認すること
 ・非機能要件を構築する際に、サービスを構築する上で現実的な非機能要件か？を、検索処理もしくはEngineer Managerと協議をし、確認すること。
 ・また非現実的な非機能要件になった場合は、要求の調整をするようにユーザー（human）と調整すること
+・各エージェントは日本語でやり取りをしてください
+
+
+✴️要求一覧の表
+{request_table}
             """,
             expected_output="""
 要求から機能要件と非機能要件をcsvフォーマットで構築する
@@ -81,11 +86,16 @@ class RequirementDefinitionPhase1:
 下記の要件を守って、SLO/SLAの一覧を作成する。
 
 ✴️条件
-・要求および機能要件の一覧を表データとして入力される
+・要求一覧は表データとして入力される（要求一覧の表を参照）
+・前のタスクで構築した機能要件の一覧と要求一覧を利用して、SLO/SLAの一覧を作成する
 ・SLO/SLAの一覧のフォーマットはCSVとすること
 ・SLO/SLAは、一般的なWebサービスを構築する際のSLO/SLAを参考にし、検討すべきメトリクスを設定すること
 ・SLO/SLAを設定する際に、Infrastructure Engineerと協議し、決めていくこと
 ・Webサービスを構築する上で、非現実的なSLO/SLAになりそうな場合は、ユーザー（human）やProduct Managerに対し、要求や要件を調整し、SLO/SLAを再設定すること
+・各エージェントは日本語でやり取りをしてください
+
+✴️要求一覧の表
+{request_table}
             """,
             expected_output="""
 要求や要件から、SLO/SLAをcsvフォーマットで構築する
