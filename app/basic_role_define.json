@@ -1,0 +1,26 @@
+{
+  "product_manager": {
+    "background": "",
+    "llm": "gemini-2.0-flash"
+  },
+  "engineer_manager": {
+    "background": "",
+    "llm": "gemini-2.0-flash"
+  },
+  "infrastructure_engineer": {
+    "background": "",
+    "llm": "gemini-2.0-flash"
+  },
+  "backend_engineer": {
+    "background": "",
+    "llm": "gemini-2.0-flash"
+  },
+  "frontend_engineer": {
+    "background": "",
+    "llm": "gemini-2.0-flash"
+  },
+  "qa_engineer": {
+    "background": "",
+    "llm": "gemini-2.0-flash"
+  }
+}
