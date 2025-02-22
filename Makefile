@@ -14,4 +14,4 @@ push_image:
 	docker push ${DOCKER_URL}:latest
 
 run_local:
-	docker run --env GEMINI_API_KEY=${GEMINI_API_KEY} --env GOOGLE_API_KEY=${GOOGLE_API_KEY} --env GOOGLE_CSE_ID=${GOOGLE_CSE_ID}
+	docker run --env GEMINI_API_KEY=${GEMINI_API_KEY} --env GOOGLE_API_KEY=${GOOGLE_API_KEY} --env GOOGLE_CSE_ID=${GOOGLE_CSE_ID} -it ${DOCKER_URL}:latest

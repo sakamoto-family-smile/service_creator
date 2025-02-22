@@ -1,4 +1,4 @@
-from langchain_core.tools import Tool, BaseTool
+from langchain_core.tools import Tool
 from langchain.agents import load_tools
 from langchain_google_community import GoogleSearchAPIWrapper
 
@@ -12,6 +12,11 @@ def google_search_tool() -> Tool:
     )
 
 
-def human_feedback_tool() -> BaseTool:
+def human_feedback_tool() -> Tool:
     tools = load_tools(["human"])
-    return tools[0]
+    tool = Tool(
+        name=tools[0].name,
+        description=tools[0].description,
+        func=tools[0].run
+    )
+    return tool

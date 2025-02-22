@@ -1,4 +1,4 @@
-from .requirement_definition_phase import RequirementDefinitionPhase1
+from requirement_definition_phase import RequirementDefinitionPhase1
 import os
 
 

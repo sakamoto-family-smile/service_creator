@@ -1,10 +1,10 @@
 from crewai import Agent, Crew, Task, Process, LLM
-from .service_creator_agents import (
+from service_creator_agents import (
     product_manager,
     engineer_manager,
     infrastructure_engineer
 )
-from .service_creator_tools import google_search_tool, human_feedback_tool
+from service_creator_tools import google_search_tool, human_feedback_tool
 import os
 import pandas as pd
 
@@ -12,7 +12,7 @@ import pandas as pd
 class RequirementDefinitionPhase1:
     def __init__(self) -> None:
         self.__llm_instance = LLM(
-            model="gemini-2.0-flash",
+            model="gemini/gemini-1.5-flash",
             api_key=os.environ.get("GEMINI_API_KEY")
         )  # TODO : 各Agentごとにllmを設定したい
 
