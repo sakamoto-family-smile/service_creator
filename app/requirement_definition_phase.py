@@ -2,7 +2,7 @@ from crewai import Agent, Crew, Task, Process, LLM
 import os
 
 
-class RquirementDefinitionPhase:
+class RequirementDefinitionPhase:
     def __init__(self, basic_role_define: dict) -> None:
         self.__basic_role_define = basic_role_define
         self.__backstory_key = "background"
