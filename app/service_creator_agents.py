@@ -16,6 +16,7 @@ EMからの質問、変更要望をユーザーにフィードバックし、ユ
         """,
         llm=llm,
         tools=tools,
+        allow_delegation=True,
         verbose=True,
     )
 
@@ -35,6 +36,7 @@ PMと必要に応じて、要件の調整を行う。コンポーネント図や
         """,
         llm=llm,
         tools=tools,
+        allow_delegation=True,
         verbose=True,
     )
 
@@ -51,6 +53,7 @@ def infrastructure_engineer(goal: str, llm: LLM, tools: Optional[List[Any]]) -> 
         """,
         llm=llm,
         tools=tools,
+        allow_delegation=True,
         verbose=True,
     )
 
@@ -67,6 +70,7 @@ def backend_engineer(goal: str, llm: LLM, tools: Optional[List[Any]]) -> Agent:
         """,
         llm=llm,
         tools=tools,
+        allow_delegation=True,
         verbose=True,
     )
 
@@ -83,6 +87,7 @@ def frontend_engineer(goal: str, llm: LLM, tools: Optional[List[Any]]) -> Agent:
         """,
         llm=llm,
         tools=tools,
+        allow_delegation=True,
         verbose=True,
     )
 
@@ -98,5 +103,6 @@ def qa_engineer(goal: str, llm: LLM, tools: Optional[List[Any]]) -> Agent:
         """,
         llm=llm,
         tools=tools,
+        allow_delegation=True,
         verbose=True,
     )

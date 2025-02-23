@@ -119,5 +119,8 @@ class RequirementDefinitionPhase1:
             ],
             process=Process.sequential,
             before_kickoff_callbacks=[self.before_kickoff],
+            planning=True,
+            planning_llm=self.__llm_instance,
+            share_crew=True,
             verbose=True
         )
