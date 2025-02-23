@@ -18,7 +18,7 @@ class RequirementDefinitionPhase1:
 
     def before_kickoff(self, inputs):
         csv_path = inputs["request_list_path"]
-        df = pd.read_csv(csv_path)
+        df = pd.read_csv(csv_path).set_index("No")
         return {"request_table": df.to_string()}
 
     def product_manager(self) -> Agent:
