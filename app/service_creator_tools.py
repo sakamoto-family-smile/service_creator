@@ -1,7 +1,5 @@
 from langchain_core.tools import Tool
 from langchain_google_community import GoogleSearchAPIWrapper
-from typing import Callable
-from pydantic import Field
 
 
 def google_search_tool() -> Tool:
