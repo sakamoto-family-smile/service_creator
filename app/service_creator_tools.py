@@ -1,7 +1,7 @@
 from langchain_core.tools import Tool
-from langchain_community.tools.human import HumanInputRun
-from langchain.agents import load_tools
 from langchain_google_community import GoogleSearchAPIWrapper
+from typing import Callable
+from pydantic import Field
 
 
 def google_search_tool() -> Tool:
@@ -13,13 +13,25 @@ def google_search_tool() -> Tool:
     )
 
 
-# TODO : 利用時にエラーになってしまう
 def human_feedback_tool() -> Tool:
-    tools = load_tools(["human"])
+    name = "human"
+    description = """
+        You can ask a human for guidance when you think you got stuck or you are not sure what to do next.
+        The input should be a question for the human.
+    """
+
+    def _print_func(text: str) -> None:
+        print("\n")  # noqa: T201
+        print("====== Question for Human ======\n")
+        print(text)  # noqa: T201
+
+    def _run(query: str) -> str:
+        _print_func(query)
+        return input()
+
     tool = Tool(
-        name=tools[0].name,
-        description=tools[0].description,
-        func=tools[0].run
+        name=name,
+        description=description,
+        func=_run
     )
-    HumanInputRun.model_rebuild()
     return tool

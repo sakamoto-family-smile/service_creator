@@ -4,7 +4,7 @@ from service_creator_agents import (
     engineer_manager,
     infrastructure_engineer
 )
-from service_creator_tools import google_search_tool
+from service_creator_tools import google_search_tool, human_feedback_tool
 import os
 import pandas as pd
 
@@ -29,7 +29,7 @@ class RequirementDefinitionPhase1:
         return product_manager(
             goal=goal,
             llm=self.__llm_instance,
-            tools=[google_search_tool()]
+            tools=[google_search_tool(), human_feedback_tool()]
         )
 
     def engineer_manager(self) -> Agent:
@@ -40,7 +40,7 @@ class RequirementDefinitionPhase1:
         return engineer_manager(
             goal=goal,
             llm=self.__llm_instance,
-            tools=[google_search_tool()]
+            tools=[google_search_tool(), human_feedback_tool()]
         )
 
     def infrastructure_engineer(self) -> Agent:
@@ -50,7 +50,7 @@ class RequirementDefinitionPhase1:
         return infrastructure_engineer(
             goal=goal,
             llm=self.__llm_instance,
-            tools=[google_search_tool()]
+            tools=[google_search_tool(), human_feedback_tool()]
         )
 
     def task_of_creating_requirement_list(self) -> Task:
