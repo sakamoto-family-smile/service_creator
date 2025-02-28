@@ -1,3 +1,4 @@
 crewai
 crewai[tools]
 langchain-google-community
+chainlit

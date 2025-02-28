@@ -1,9 +1,9 @@
-from requirement_definition_phase import RequirementDefinitionPhase1
+from requirement_definition_phase import RequirementDefinitionPhase
 import os
 
 
 def main():
-    requirement_phase = RequirementDefinitionPhase1()
+    requirement_phase = RequirementDefinitionPhase()
     request_csv_path = os.path.join(os.path.dirname(__file__), "request_list.csv")
     crew = requirement_phase.crew()
     result = crew.kickoff(

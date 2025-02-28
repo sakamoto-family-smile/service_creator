@@ -4,12 +4,12 @@ from service_creator_agents import (
     engineer_manager,
     infrastructure_engineer
 )
-from service_creator_tools import google_search_tool, human_feedback_tool
+from service_creator_tools import google_search_tool, human_feedback_tool_with_chainlit
 import os
 import pandas as pd
 
 
-class RequirementDefinitionPhase1:
+class RequirementDefinitionPhase:
     def __init__(self) -> None:
         self.__llm_instance = LLM(
             model="gemini/gemini-1.5-flash",
@@ -25,32 +25,38 @@ class RequirementDefinitionPhase1:
         goal = """
 ・主体的に要求から機能要件と非機能要件をcsvフォーマットで構築する。Product Managerと協力すること。
 ・SLO/SLAの設定をEngineer Managerと協力して、構築する
+・Engineer Managerと協力して、開発項目一覧を作成すること
+・Engineer Managerと協力して、抽象化したコンポーネント図を作成すること
         """
         return product_manager(
             goal=goal,
             llm=self.__llm_instance,
-            tools=[google_search_tool(), human_feedback_tool()]
+            tools=[google_search_tool(), human_feedback_tool_with_chainlit()]
         )
 
     def engineer_manager(self) -> Agent:
         goal = """
 ・Product Managerと協力して、機能要件・非機能要件を構築すること
 ・主体的にSLO/SLAの構築を行い、csvフォーマットで出力すること。Product ManagerやInfrastructure Engineerと協力すること。
+・主体的に開発項目一覧の作成を行い、csvフォーマットで出力すること。Product ManagerやInfrastructure Engineerと協力すること。
+・主体的にサービス全体の抽象化したコンポーネント図を作成し、drawioのフォーマットで出力すること。Product ManagerやInfrastructure Engineerと協力すること。
         """
         return engineer_manager(
             goal=goal,
             llm=self.__llm_instance,
-            tools=[google_search_tool(), human_feedback_tool()]
+            tools=[google_search_tool(), human_feedback_tool_with_chainlit()]
         )
 
     def infrastructure_engineer(self) -> Agent:
         goal = """
 ・Engineer Managerと協力して、SLO/SLAの構築を実施すること
+・Engineer Managerと協力して、開発項目一覧を作成すること
+・Engineer Managerと協力して、抽象化したコンポーネント図を作成すること
         """
         return infrastructure_engineer(
             goal=goal,
             llm=self.__llm_instance,
-            tools=[google_search_tool(), human_feedback_tool()]
+            tools=[google_search_tool(), human_feedback_tool_with_chainlit()]
         )
 
     def task_of_creating_requirement_list(self) -> Task:
@@ -103,6 +109,45 @@ class RequirementDefinitionPhase1:
             agent=self.engineer_manager(),
             output_file="slo_sla.csv",
             context=[self.task_of_creating_requirement_list()],
+            human_input=True
+        )
+
+    def task_of_creating_development_task_list(self) -> Task:
+        return Task(
+            description="""
+下記の条件を守って、開発項目一覧を作成する。
+
+★条件
+・要件一覧はcsvデータとして入力される
+・SLO/SLA一覧はcsvデータとして入力される
+・開発項目一覧のフォーマットはCSVとすること
+・開発項目を作る際の観点は後述の「開発項目に関する観点」を遵守すること
+
+★開発項目に関する観点
+・バックエンド、フロントエンド、全体のタスクとして分類が可能であること
+・作業概要、作業詳細、主担当の情報が開発項目ごとに明記されていること
+・
+・
+
+★チームに関する情報
+            """,
+            expected_output="""
+            """,
+            agent=self.engineer_manager(),
+            output_file="development_task_list.csv",
+            context=[self.task_of_creating_slo_sla_list()],
+            human_input=True
+        )
+
+    def task_of_creating_abstract_architecture_diagram_of_service(self):
+        return Task(
+            description="""
+            """,
+            expected_output="""
+            """,
+            agent=self.engineer_manager(),
+            output_file="abstract_architecture_diagram_of_service.csv",
+            context=[self.task_of_creating_development_task_list()],
             human_input=True
         )
 

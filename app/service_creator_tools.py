@@ -1,5 +1,7 @@
 from langchain_core.tools import Tool
 from langchain_google_community import GoogleSearchAPIWrapper
+import chainlit as cl
+from chainlit import run_sync
 
 
 def google_search_tool() -> Tool:
@@ -11,7 +13,7 @@ def google_search_tool() -> Tool:
     )
 
 
-def human_feedback_tool() -> Tool:
+def human_feedback_tool_with_terminal() -> Tool:
     name = "human"
     description = """
         You can ask a human for guidance when you think you got stuck or you are not sure what to do next.
@@ -31,5 +33,25 @@ def human_feedback_tool() -> Tool:
         name=name,
         description=description,
         func=_run
+    )
+    return tool
+
+
+def human_feedback_tool_with_chainlit() -> Tool:
+    name = "human"
+    description = """
+        You can ask a human for guidance when you think you got stuck or you are not sure what to do next.
+        The input should be a question for the human.
+    """
+
+    def _ask_human(text: str) -> str:
+        human_response = run_sync(cl.AskUserMessage(content=f"{text}").send())
+        if human_response:
+            return human_response["output"]
+
+    tool = Tool(
+        name=name,
+        description=description,
+        func=_ask_human
     )
     return tool
