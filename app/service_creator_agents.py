@@ -1,9 +1,26 @@
 from crewai import Agent, LLM
 from typing import Optional, List, Any
+import logging
+from crewai.agents.parser import AgentAction
+from crewai.agents.crew_agent_executor import ToolResult
+
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
 
 
 # TODO : デフォルトでよく使うツールは先に設定しておいて、オーバーライドさせる形としたい
 def product_manager(goal: str, llm: LLM, tools: Optional[List[Any]]) -> Agent:
+    def _step_callback(answer):
+        text = None
+        if isinstance(answer, AgentAction):
+            text = f"Agent thought: {answer.thought}"
+        elif isinstance(answer, ToolResult):
+            text = f"Tool Result: {answer.result}"
+        else:
+            text = answer
+        logging.info(f"{text}")
+
     return Agent(
         role="Product Manager",
         goal=goal,
@@ -17,6 +34,7 @@ EMからの質問、変更要望をユーザーにフィードバックし、ユ
         llm=llm,
         tools=tools,
         allow_delegation=True,
+        step_callback=_step_callback,
         verbose=True,
     )
 

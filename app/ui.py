@@ -16,8 +16,9 @@ async def on_chat_start():
             content="作りたいWebサービスの要求書をcsvフォーマットでアップロードしてください", accept=["text/csv"]
         ).send()
 
-    request_csv_path = files[0]
-    result = requirement_phase.before_kickoff(
+    crew = requirement_phase.crew()
+    request_csv_path = files[0].path
+    result = crew.kickoff(
         inputs={"request_list_path": request_csv_path}
     )
 

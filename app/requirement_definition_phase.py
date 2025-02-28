@@ -4,9 +4,17 @@ from service_creator_agents import (
     engineer_manager,
     infrastructure_engineer
 )
-from service_creator_tools import google_search_tool, human_feedback_tool_with_chainlit
+from service_creator_tools import (
+    google_search_tool,
+    human_feedback_tool_with_chainlit
+)
 import os
 import pandas as pd
+import logging
+
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
 
 
 class RequirementDefinitionPhase:
@@ -73,7 +81,7 @@ class RequirementDefinitionPhase:
 ・非機能要件を構築する際に、サービスを構築する上で現実的な非機能要件か？を、検索処理もしくはEngineer Managerと協議をし、確認すること。
 ・また非現実的な非機能要件になった場合は、要求の調整をするようにユーザー（human）と調整すること
 ・各エージェントは日本語でやり取りをしてください
-
+・作成した成果物は、他のエージェントにレビュー依頼を出し、確認してもらってください
 
 ✴️要求一覧の表
 {request_table}
@@ -99,6 +107,7 @@ class RequirementDefinitionPhase:
 ・SLO/SLAを設定する際に、Infrastructure Engineerと協議し、決めていくこと
 ・Webサービスを構築する上で、非現実的なSLO/SLAになりそうな場合は、ユーザー（human）やProduct Managerに対し、要求や要件を調整し、SLO/SLAを再設定すること
 ・各エージェントは日本語でやり取りをしてください
+・作成した成果物は、他のエージェントにレビュー依頼を出し、確認してもらってください
 
 ✴️要求一覧の表
 {request_table}
@@ -112,6 +121,7 @@ class RequirementDefinitionPhase:
             human_input=True
         )
 
+    # TODO : implement
     def task_of_creating_development_task_list(self) -> Task:
         return Task(
             description="""
@@ -122,6 +132,7 @@ class RequirementDefinitionPhase:
 ・SLO/SLA一覧はcsvデータとして入力される
 ・開発項目一覧のフォーマットはCSVとすること
 ・開発項目を作る際の観点は後述の「開発項目に関する観点」を遵守すること
+・作成した成果物は、他のエージェントにレビュー依頼を出し、確認してもらってください
 
 ★開発項目に関する観点
 ・バックエンド、フロントエンド、全体のタスクとして分類が可能であること
@@ -139,6 +150,7 @@ class RequirementDefinitionPhase:
             human_input=True
         )
 
+    # TODO : implement
     def task_of_creating_abstract_architecture_diagram_of_service(self):
         return Task(
             description="""
@@ -150,6 +162,9 @@ class RequirementDefinitionPhase:
             context=[self.task_of_creating_development_task_list()],
             human_input=True
         )
+
+    def task_completion_callback(self, task_result):
+        logging.info(f"task result is {task_result}")
 
     def crew(self) -> Crew:
         return Crew(
@@ -167,5 +182,6 @@ class RequirementDefinitionPhase:
             planning=True,
             planning_llm=self.__llm_instance,
             share_crew=True,
+            task_callback=self.task_completion_callback,
             verbose=True
         )

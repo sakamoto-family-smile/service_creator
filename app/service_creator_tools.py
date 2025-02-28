@@ -45,9 +45,11 @@ def human_feedback_tool_with_chainlit() -> Tool:
     """
 
     def _ask_human(text: str) -> str:
-        human_response = run_sync(cl.AskUserMessage(content=f"{text}").send())
+        human_response = run_sync(cl.AskUserMessage(content=f"{text}", timeout=600).send())
         if human_response:
             return human_response["output"]
+        else:
+            run_sync(cl.Message(content="ユーザーから回答を得られませんでした。次の処理に移行します。").send())
 
     tool = Tool(
         name=name,

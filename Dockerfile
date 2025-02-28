@@ -5,4 +5,4 @@ ADD requirements.txt .
 RUN pip install -r requirements.txt
 COPY app ./app
 
-ENTRYPOINT [ "chainlit", "run", "app/ui.py" ]
+ENTRYPOINT [ "chainlit", "run", "app/ui.py", "--port", "8000", "--host", "0.0.0.0"]
