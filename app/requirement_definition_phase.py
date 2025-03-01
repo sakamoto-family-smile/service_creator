@@ -6,7 +6,7 @@ from service_creator_agents import (
 )
 from service_creator_tools import (
     google_search_tool,
-    human_feedback_tool_with_chainlit
+    HumanFeedbackTool
 )
 import os
 import pandas as pd
@@ -18,11 +18,13 @@ logging.basicConfig(level=logging.INFO)
 
 
 class RequirementDefinitionPhase:
-    def __init__(self) -> None:
+    def __init__(self, ui_type: str = "web") -> None:
         self.__llm_instance = LLM(
             model="gemini/gemini-1.5-flash",
             api_key=os.environ.get("GEMINI_API_KEY")
         )  # TODO : 各Agentごとにllmを設定したい
+
+        self.__human_feedback_tool = HumanFeedbackTool(ui_type=ui_type).get_human_feedback_tool()
 
     def before_kickoff(self, inputs):
         csv_path = inputs["request_list_path"]
@@ -39,7 +41,7 @@ class RequirementDefinitionPhase:
         return product_manager(
             goal=goal,
             llm=self.__llm_instance,
-            tools=[google_search_tool(), human_feedback_tool_with_chainlit()]
+            tools=[google_search_tool(), self.__human_feedback_tool]
         )
 
     def engineer_manager(self) -> Agent:
@@ -52,7 +54,7 @@ class RequirementDefinitionPhase:
         return engineer_manager(
             goal=goal,
             llm=self.__llm_instance,
-            tools=[google_search_tool(), human_feedback_tool_with_chainlit()]
+            tools=[google_search_tool(), self.__human_feedback_tool]
         )
 
     def infrastructure_engineer(self) -> Agent:
@@ -64,7 +66,7 @@ class RequirementDefinitionPhase:
         return infrastructure_engineer(
             goal=goal,
             llm=self.__llm_instance,
-            tools=[google_search_tool(), human_feedback_tool_with_chainlit()]
+            tools=[google_search_tool(), self.__human_feedback_tool]
         )
 
     def task_of_creating_requirement_list(self) -> Task:
@@ -82,6 +84,7 @@ class RequirementDefinitionPhase:
 ・また非現実的な非機能要件になった場合は、要求の調整をするようにユーザー（human）と調整すること
 ・各エージェントは日本語でやり取りをしてください
 ・作成した成果物は、他のエージェントにレビュー依頼を出し、確認してもらってください
+・成果物が完成したら、必ずユーザーにレビュー依頼を出すようにしてください
 
 ✴️要求一覧の表
 {request_table}
@@ -91,7 +94,7 @@ class RequirementDefinitionPhase:
             """,
             agent=self.product_manager(),
             output_file="requirements.csv",
-            human_input=True
+            human_input=False
         )
 
     def task_of_creating_slo_sla_list(self) -> Task:
@@ -108,6 +111,7 @@ class RequirementDefinitionPhase:
 ・Webサービスを構築する上で、非現実的なSLO/SLAになりそうな場合は、ユーザー（human）やProduct Managerに対し、要求や要件を調整し、SLO/SLAを再設定すること
 ・各エージェントは日本語でやり取りをしてください
 ・作成した成果物は、他のエージェントにレビュー依頼を出し、確認してもらってください
+・成果物が完成したら、必ずユーザーにレビュー依頼を出すようにしてください
 
 ✴️要求一覧の表
 {request_table}
@@ -118,7 +122,7 @@ class RequirementDefinitionPhase:
             agent=self.engineer_manager(),
             output_file="slo_sla.csv",
             context=[self.task_of_creating_requirement_list()],
-            human_input=True
+            human_input=False
         )
 
     # TODO : 工程情報や観点についてはcsvに記載して、テーブルデータとして渡す方がメンテナンスがしやすそう
@@ -133,6 +137,7 @@ class RequirementDefinitionPhase:
 ・開発項目一覧のフォーマットはCSVとすること
 ・開発項目を作る際の観点は後述の「開発項目に関する観点」を遵守すること
 ・作成した成果物は、他のエージェントにレビュー依頼を出し、確認してもらってください
+・成果物が完成したら、必ずユーザーにレビュー依頼を出すようにしてください
 
 ★開発項目に関する観点
 ・バックエンド、フロントエンド、全体のタスクとして分類が可能であること
@@ -157,7 +162,7 @@ class RequirementDefinitionPhase:
             agent=self.engineer_manager(),
             output_file="development_task_list.csv",
             context=[self.task_of_creating_slo_sla_list()],
-            human_input=True
+            human_input=False
         )
 
     # TODO : implement
@@ -170,7 +175,7 @@ class RequirementDefinitionPhase:
             agent=self.engineer_manager(),
             output_file="abstract_architecture_diagram_of_service.csv",
             context=[self.task_of_creating_development_task_list()],
-            human_input=True
+            human_input=False
         )
 
     # TODO : タスクごとの成果物をユーザーが取得できるように修正する

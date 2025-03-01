@@ -13,47 +13,38 @@ def google_search_tool() -> Tool:
     )
 
 
-def human_feedback_tool_with_terminal() -> Tool:
-    name = "human"
-    description = """
-        You can ask a human for guidance when you think you got stuck or you are not sure what to do next.
-        The input should be a question for the human.
-    """
+class HumanFeedbackTool:
+    def __init__(self, ui_type: str="web"):
+        self.__ui_type = ui_type
 
-    def _print_func(text: str) -> None:
-        print("\n")  # noqa: T201
-        print("====== Question for Human ======\n")
-        print(text)  # noqa: T201
+    def get_human_feedback_tool(self) -> Tool:
+        name = "human"
+        description = """
+            You can ask a human for guidance when you think you got stuck or you are not sure what to do next.
+            The input should be a question for the human.
+        """
 
-    def _run(query: str) -> str:
-        _print_func(query)
-        return input()
+        if self.__ui_type == "terminal":
+            def _print_func(text: str) -> None:
+                print("\n")  # noqa: T201
+                print("====== Question for Human ======\n")
+                print(text)  # noqa: T201
 
-    tool = Tool(
-        name=name,
-        description=description,
-        func=_run
-    )
-    return tool
-
-
-def human_feedback_tool_with_chainlit() -> Tool:
-    name = "human"
-    description = """
-        You can ask a human for guidance when you think you got stuck or you are not sure what to do next.
-        The input should be a question for the human.
-    """
-
-    def _ask_human(text: str) -> str:
-        human_response = run_sync(cl.AskUserMessage(content=f"{text}", timeout=600).send())
-        if human_response:
-            return human_response["output"]
+            def _func(text: str) -> str:
+                _print_func(text)
+                return input()
+        elif self.__ui_type == "web":
+            def _func(text: str) -> str:
+                human_response = run_sync(cl.AskUserMessage(content=f"{text}", timeout=600).send())
+                if human_response:
+                    return human_response["output"]
+                else:
+                    run_sync(cl.Message(content="ユーザーから回答を得られませんでした。次の処理に移行します。").send())
         else:
-            run_sync(cl.Message(content="ユーザーから回答を得られませんでした。次の処理に移行します。").send())
+            raise NotImplementedError(f"{self.__ui_type} is not implemented! ")
 
-    tool = Tool(
-        name=name,
-        description=description,
-        func=_ask_human
-    )
-    return tool
+        return Tool(
+            name=name,
+            description=description,
+            func=_func
+        )
