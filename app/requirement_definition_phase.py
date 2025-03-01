@@ -173,6 +173,8 @@ class RequirementDefinitionPhase:
             human_input=True
         )
 
+    # TODO : タスクごとの成果物をユーザーが取得できるように修正する
+    # UI関連の関数は外からもらうようにしたい
     def task_completion_callback(self, task_result):
         logging.info(f"task result is {task_result}")
 
