@@ -33,7 +33,7 @@ class RequirementDefinitionPhase:
 
     def product_manager(self) -> Agent:
         goal = """
-・主体的に要求から機能要件と非機能要件をcsvフォーマットで構築する。Product Managerと協力すること。
+・主体的に要求から機能要件と非機能要件を表形式で構築する。Product Managerと協力すること。
 ・SLO/SLAの設定をEngineer Managerと協力して、構築する
 ・Engineer Managerと協力して、開発項目一覧を作成すること
 ・Engineer Managerと協力して、抽象化したコンポーネント図を作成すること
@@ -47,8 +47,8 @@ class RequirementDefinitionPhase:
     def engineer_manager(self) -> Agent:
         goal = """
 ・Product Managerと協力して、機能要件・非機能要件を構築すること
-・主体的にSLO/SLAの構築を行い、csvフォーマットで出力すること。Product ManagerやInfrastructure Engineerと協力すること。
-・主体的に開発項目一覧の作成を行い、csvフォーマットで出力すること。Product ManagerやInfrastructure Engineerと協力すること。
+・主体的にSLO/SLAの構築を行い、表形式で出力すること。Product ManagerやInfrastructure Engineerと協力すること。
+・主体的に開発項目一覧の作成を行い、表形式で出力すること。Product ManagerやInfrastructure Engineerと協力すること。
 ・主体的にサービス全体の抽象化したコンポーネント図を作成し、drawioのフォーマットで出力すること。Product ManagerやInfrastructure Engineerと協力すること。
         """
         return engineer_manager(
@@ -77,7 +77,7 @@ class RequirementDefinitionPhase:
 ★条件
 ・要求一覧は表データとして入力される（要求一覧の表を参照）
 ・要求一覧から機能要件と非機能要件と分類できるように生成すること
-・要件一覧のフォーマットはcsvとすること
+・要件一覧のフォーマットは表形式とすること
 ・要求一覧の優先度に沿って、要件一覧に優先度をつけること
 ・要求内容から、ユーザーの作りたいものを想定し、必要に応じて要求の追加や削除をユーザー（human）に確認すること
 ・非機能要件を構築する際に、サービスを構築する上で現実的な非機能要件か？を、検索処理もしくはEngineer Managerと協議をし、確認すること。
@@ -90,7 +90,7 @@ class RequirementDefinitionPhase:
 {request_table}
             """,
             expected_output="""
-要求から機能要件と非機能要件をcsvフォーマットで構築する
+要求から機能要件と非機能要件を表形式で構築する
             """,
             agent=self.product_manager(),
             output_file="requirements.csv",
@@ -105,7 +105,7 @@ class RequirementDefinitionPhase:
 ✴️条件
 ・要求一覧は表データとして入力される（要求一覧の表を参照）
 ・前のタスクで構築した機能要件の一覧と要求一覧を利用して、SLO/SLAの一覧を作成する
-・SLO/SLAの一覧のフォーマットはCSVとすること
+・SLO/SLAの一覧のフォーマットは表形式とすること
 ・SLO/SLAは、一般的なWebサービスを構築する際のSLO/SLAを参考にし、検討すべきメトリクスを設定すること
 ・SLO/SLAを設定する際に、Infrastructure Engineerと協議し、決めていくこと
 ・Webサービスを構築する上で、非現実的なSLO/SLAになりそうな場合は、ユーザー（human）やProduct Managerに対し、要求や要件を調整し、SLO/SLAを再設定すること
@@ -117,7 +117,7 @@ class RequirementDefinitionPhase:
 {request_table}
             """,
             expected_output="""
-要求や要件から、SLO/SLAをcsvフォーマットで構築する
+要求や要件から、SLO/SLAを表形式で構築する
             """,
             agent=self.engineer_manager(),
             output_file="slo_sla.csv",
@@ -132,9 +132,9 @@ class RequirementDefinitionPhase:
 下記の条件を守って、開発項目一覧を作成する。
 
 ★条件
-・要件一覧はcsvデータとして入力される
-・SLO/SLA一覧はcsvデータとして入力される
-・開発項目一覧のフォーマットはCSVとすること
+・要件一覧は表形式のデータとして入力される
+・SLO/SLA一覧は表形式のデータとして入力される
+・開発項目一覧のフォーマットは表形式とすること
 ・開発項目を作る際の観点は後述の「開発項目に関する観点」を遵守すること
 ・作成した成果物は、他のエージェントにレビュー依頼を出し、確認してもらってください
 ・成果物が完成したら、必ずユーザーにレビュー依頼を出すようにしてください
@@ -158,6 +158,7 @@ class RequirementDefinitionPhase:
 ★チームに関する情報
             """,
             expected_output="""
+要件一覧やSLO/SLA一覧から開発項目一覧を表形式で作成する
             """,
             agent=self.engineer_manager(),
             output_file="development_task_list.csv",
