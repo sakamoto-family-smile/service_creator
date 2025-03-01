@@ -121,7 +121,7 @@ class RequirementDefinitionPhase:
             human_input=True
         )
 
-    # TODO : implement
+    # TODO : 工程情報や観点についてはcsvに記載して、テーブルデータとして渡す方がメンテナンスがしやすそう
     def task_of_creating_development_task_list(self) -> Task:
         return Task(
             description="""
@@ -136,9 +136,19 @@ class RequirementDefinitionPhase:
 
 ★開発項目に関する観点
 ・バックエンド、フロントエンド、全体のタスクとして分類が可能であること
-・作業概要、作業詳細、主担当の情報が開発項目ごとに明記されていること
-・
-・
+・作業概要、作業詳細、工程、主担当の情報が開発項目ごとに明記されていること
+・担当は各エージェントに割り振ること
+・工程については、後述する「工程情報」から選択すること
+
+★工程情報
+・要件定義フェーズ: 要求から要件を抽出するフェーズ。抽象的なインフラ設計、開発項目作成、非機能要求整理（SLA/SLO）も実施する。
+・設計フェーズ: 要件から、具体的なインフラ設計やデータベース設計、クラス図、シーケンス図の作成を行い、次の実装フェーズに繋げる。
+・実装フェーズ: 設計フェーズで構築した情報を元に、プログラミング言語を用いて、バックエンド・フロントエンドごとに実装を行う。
+・単体テスト実装フェーズ: 実装フェーズで実装したコードに関して、要件通りに動作するかを検証するためにUnitTestを実装する。プログラミング言語ごとに実装する。
+・単体テスト実行フェーズ: 単体テスト実装フェーズで実装したUnitTestを実行し、期待通りに動作していないコードについて改修を行う。
+・QAテスト設計フェーズ: 要件から、第三者試験（フロントエンドとバックエンドを結合した試験）を行うためのQAテスト項目を設計、作成する
+・QAテスト実装フェーズ: QAテスト設計フェーズで構築したQAテスト項目を使って、テストを実装する
+・QAテスト実行フェーズ: QAテスト実装フェーズで構築したQAテストを使って、テストを実行する
 
 ★チームに関する情報
             """,
@@ -175,7 +185,8 @@ class RequirementDefinitionPhase:
             ],
             tasks=[
                 self.task_of_creating_requirement_list(),
-                self.task_of_creating_slo_sla_list()
+                self.task_of_creating_slo_sla_list(),
+                self.task_of_creating_development_task_list()
             ],
             process=Process.sequential,
             before_kickoff_callbacks=[self.before_kickoff],
