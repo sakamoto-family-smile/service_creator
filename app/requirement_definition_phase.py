@@ -24,7 +24,7 @@ class RequirementDefinitionPhase:
             api_key=os.environ.get("GEMINI_API_KEY")
         )  # TODO : 各Agentごとにllmを設定したい
 
-        self.__human_feedback_tool = HumanFeedbackTool(ui_type=ui_type).get_human_feedback_tool()
+        self.__human_feedback_instance = HumanFeedbackTool(ui_type=ui_type)
 
     def before_kickoff(self, inputs):
         csv_path = inputs["request_list_path"]
@@ -38,10 +38,14 @@ class RequirementDefinitionPhase:
 ・Engineer Managerと協力して、開発項目一覧を作成すること
 ・Engineer Managerと協力して、抽象化したコンポーネント図を作成すること
         """
+        author = "product manager"
         return product_manager(
             goal=goal,
             llm=self.__llm_instance,
-            tools=[google_search_tool(), self.__human_feedback_tool]
+            tools=[
+                google_search_tool(),
+                self.__human_feedback_instance.get_human_feedback_tool(author=author)
+            ]
         )
 
     def engineer_manager(self) -> Agent:
@@ -51,10 +55,14 @@ class RequirementDefinitionPhase:
 ・主体的に開発項目一覧の作成を行い、表形式で出力すること。Product ManagerやInfrastructure Engineerと協力すること。
 ・主体的にサービス全体の抽象化したコンポーネント図を作成し、drawioのフォーマットで出力すること。Product ManagerやInfrastructure Engineerと協力すること。
         """
+        author = "engineer manager"
         return engineer_manager(
             goal=goal,
             llm=self.__llm_instance,
-            tools=[google_search_tool(), self.__human_feedback_tool]
+            tools=[
+                google_search_tool(),
+                self.__human_feedback_instance.get_human_feedback_tool(author=author)
+            ]
         )
 
     def infrastructure_engineer(self) -> Agent:
@@ -63,10 +71,14 @@ class RequirementDefinitionPhase:
 ・Engineer Managerと協力して、開発項目一覧を作成すること
 ・Engineer Managerと協力して、抽象化したコンポーネント図を作成すること
         """
+        author = "infrastructure engineer"
         return infrastructure_engineer(
             goal=goal,
             llm=self.__llm_instance,
-            tools=[google_search_tool(), self.__human_feedback_tool]
+            tools=[
+                google_search_tool(),
+                self.__human_feedback_instance.get_human_feedback_tool(author=author)
+            ]
         )
 
     def task_of_creating_requirement_list(self) -> Task:

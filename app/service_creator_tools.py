@@ -14,10 +14,10 @@ def google_search_tool() -> Tool:
 
 
 class HumanFeedbackTool:
-    def __init__(self, ui_type: str="web"):
+    def __init__(self, ui_type: str = "web"):
         self.__ui_type = ui_type
 
-    def get_human_feedback_tool(self) -> Tool:
+    def get_human_feedback_tool(self, author: str) -> Tool:
         name = "human"
         description = """
             You can ask a human for guidance when you think you got stuck or you are not sure what to do next.
@@ -35,7 +35,11 @@ class HumanFeedbackTool:
                 return input()
         elif self.__ui_type == "web":
             def _func(text: str) -> str:
-                human_response = run_sync(cl.AskUserMessage(content=f"{text}", timeout=600).send())
+                human_response = run_sync(cl.AskUserMessage(
+                    content=f"{text}",
+                    author=author,
+                    timeout=600
+                ).send())
                 if human_response:
                     return human_response["output"]
                 else:
